@@ -5,9 +5,9 @@
   "description": "Physical AI & Humanoid Robotics Book - Monorepo",
   "scripts": {
     "start": "cd docs && npm start",
-    "build": "cd docs && npm build",
-    "serve": "cd docs && npm serve",
-    "install:all": "npm install && cd docs && npm install"
+    "build": "cd docs && npm run build",
+    "serve": "cd docs && npm run serve",
+    "install:all": "npm install && cd docs && npm install && cd ../backend && pip install -r requirements.txt"
   },
   "dependencies": {
     "framer-motion": "^12.23.26"
