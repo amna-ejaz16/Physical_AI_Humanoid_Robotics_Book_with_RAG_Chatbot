@@ -14,7 +14,7 @@ const config = {
   url: 'https://amna-ejaz16.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/Physical_AI_Humanoid_Robotics_Book/',
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   organizationName: 'amna-ejaz16',
