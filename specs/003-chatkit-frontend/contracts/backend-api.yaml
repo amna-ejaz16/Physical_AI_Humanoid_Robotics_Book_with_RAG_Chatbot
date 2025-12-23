@@ -1,0 +1,317 @@
+openapi: 3.0.3
+info:
+  title: RAG Chatbot Backend API
+  description: |
+    REST API for the RAG (Retrieval-Augmented Generation) chatbot backend.
+    This API accepts questions about the Physical AI & Humanoid Robotics book
+    and returns AI-generated answers based on indexed book content.
+
+    **Used by**: ChatKit Frontend Widget
+  version: 1.0.0
+  contact:
+    name: Backend API Team
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server (to be configured)
+
+tags:
+  - name: Chat
+    description: Question answering endpoints
+  - name: Health
+    description: Service health and status
+
+paths:
+  /ask:
+    post:
+      summary: Ask a question
+      description: |
+        Submit a question about the book content. The system will:
+        1. Generate an embedding for the question
+        2. Search for the top 3 most relevant book content chunks
+        3. Generate an AI answer using retrieved context
+        4. Return the answer with source attribution
+      operationId: askQuestion
+      tags:
+        - Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              simple_question:
+                summary: Simple question
+                value:
+                  question: "What is physical AI?"
+              complex_question:
+                summary: Complex technical question
+                value:
+                  question: "How do humanoid robots integrate sensor data from multiple modalities for real-time decision making?"
+      responses:
+        '200':
+          description: Successful response with answer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+              examples:
+                success_response:
+                  summary: Successful answer
+                  value:
+                    answer: "Physical AI refers to artificial intelligence systems that interact with and manipulate the physical world through embodied forms such as robots. It combines traditional AI with physical sensors, actuators, and control systems to enable intelligent behavior in real-world environments."
+                    request_id: "req_a1b2c3d4e5f6"
+                    sources:
+                      - "Chapter 1: Introduction to Physical AI"
+                      - "Chapter 3: Embodied Intelligence"
+                      - "Chapter 5: Sensor Integration"
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                empty_question:
+                  summary: Empty question error
+                  value:
+                    error: "Question cannot be empty"
+                    error_code: "QUESTION_EMPTY"
+                    request_id: "req_error_001"
+                question_too_long:
+                  summary: Question exceeds length limit
+                  value:
+                    error: "Question exceeds maximum length of 4000 characters"
+                    error_code: "QUESTION_TOO_LONG"
+                    request_id: "req_error_002"
+                validation_error:
+                  summary: Validation failed
+                  value:
+                    error: "Validation failed"
+                    error_code: "VALIDATION_ERROR"
+                    request_id: "req_error_003"
+                    detail:
+                      - loc: ["body", "question"]
+                        msg: "field required"
+                        type: "value_error.missing"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                api_error:
+                  summary: AI service error
+                  value:
+                    error: "Failed to process question"
+                    error_code: "API_ERROR"
+                    request_id: "req_error_004"
+                search_error:
+                  summary: Search service unavailable
+                  value:
+                    error: "Search service temporarily unavailable"
+                    error_code: "SEARCH_ERROR"
+                    request_id: "req_error_005"
+                service_unavailable:
+                  summary: Generic service error
+                  value:
+                    error: "Failed to generate answer"
+                    error_code: "SERVICE_UNAVAILABLE"
+                    request_id: "req_error_006"
+
+  /health:
+    get:
+      summary: Health check
+      description: |
+        Check the health status of the backend service and its dependencies.
+        Returns the status of Qdrant vector database connection.
+      operationId: healthCheck
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                healthy:
+                  summary: All services healthy
+                  value:
+                    status: "healthy"
+                    qdrant_connected: true
+        '503':
+          description: Service is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                unhealthy:
+                  summary: Qdrant connection failed
+                  value:
+                    status: "unhealthy"
+                    qdrant_connected: false
+                    error: "Qdrant connection failed"
+
+  /:
+    get:
+      summary: API information
+      description: Returns basic information about the API and available endpoints
+      operationId: getApiInfo
+      tags:
+        - Health
+      responses:
+        '200':
+          description: API information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "RAG Chatbot Backend"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                  description:
+                    type: string
+                    example: "Retrieval-Augmented Generation chatbot for Physical AI & Humanoid Robotics book"
+                  endpoints:
+                    type: object
+                    properties:
+                      ask:
+                        type: string
+                        example: "POST /ask - Ask a question about the book"
+                      health:
+                        type: string
+                        example: "GET /health - Health check"
+                      docs:
+                        type: string
+                        example: "GET /docs - Interactive API documentation"
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - question
+      properties:
+        question:
+          type: string
+          description: User's question about the book content
+          minLength: 1
+          maxLength: 4000
+          example: "What are the key components of a humanoid robot?"
+      additionalProperties: false
+
+    ChatResponse:
+      type: object
+      required:
+        - answer
+        - request_id
+      properties:
+        answer:
+          type: string
+          description: AI-generated answer based on book content
+          example: "The key components of a humanoid robot include actuators, sensors, control systems, power systems, and AI software for decision-making."
+        request_id:
+          type: string
+          description: Unique identifier for request tracking
+          format: uuid
+          example: "req_a1b2c3d4e5f6"
+        sources:
+          type: array
+          description: Book sections used to generate the answer
+          items:
+            type: string
+          example:
+            - "Chapter 7: Humanoid Robot Architecture"
+            - "Chapter 9: Actuation Systems"
+            - "Chapter 11: Sensory Integration"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - error_code
+        - request_id
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+          example: "Question cannot be empty"
+        error_code:
+          type: string
+          description: Machine-readable error code
+          enum:
+            - VALIDATION_ERROR
+            - QUESTION_EMPTY
+            - QUESTION_TOO_LONG
+            - API_ERROR
+            - SEARCH_ERROR
+            - SERVICE_UNAVAILABLE
+          example: "QUESTION_EMPTY"
+        request_id:
+          type: string
+          description: Unique identifier for error tracking
+          format: uuid
+          example: "req_error_123"
+        detail:
+          description: Additional error details (validation errors, stack trace in dev)
+          oneOf:
+            - type: array
+              items:
+                type: object
+                properties:
+                  loc:
+                    type: array
+                    items:
+                      type: string
+                  msg:
+                    type: string
+                  type:
+                    type: string
+            - type: string
+            - type: object
+          example:
+            - loc: ["body", "question"]
+              msg: "field required"
+              type: "value_error.missing"
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - qdrant_connected
+      properties:
+        status:
+          type: string
+          description: Overall service status
+          enum:
+            - healthy
+            - unhealthy
+          example: "healthy"
+        qdrant_connected:
+          type: boolean
+          description: Qdrant vector database connection status
+          example: true
+        error:
+          type: string
+          description: Error message if service is unhealthy
+          example: "Qdrant connection failed"
+
+  securitySchemes:
+    CORS:
+      type: http
+      description: |
+        CORS is enabled for all origins in development.
+        In production, configure allowed origins in CORS middleware.
+
+security:
+  - CORS: []

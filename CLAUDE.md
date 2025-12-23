@@ -208,3 +208,11 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+## Active Technologies
+- Python 3.11+ + FastAPI 0.109+, OpenAI Agents SDK (openai-agents 1.0+), Qdrant Client 1.7+, Pydantic 2.5+, Pydantic Settings 2.1+, python-dotenv 1.0+, tiktoken 0.5+ (token counting), uvicorn 0.27+ (ASGI server) (002-rag-chatbot-backend)
+- Qdrant Cloud Free Tier (vector database for embeddings), filesystem (for book content markdown files) (002-rag-chatbot-backend)
+- JavaScript (ES6+) / HTML5 / CSS3 (003-chatkit-frontend)
+
+## Recent Changes
+- 002-rag-chatbot-backend: Added Python 3.11+ + FastAPI 0.109+, OpenAI Agents SDK (openai-agents 1.0+), Qdrant Client 1.7+, Pydantic 2.5+, Pydantic Settings 2.1+, python-dotenv 1.0+, tiktoken 0.5+ (token counting), uvicorn 0.27+ (ASGI server)

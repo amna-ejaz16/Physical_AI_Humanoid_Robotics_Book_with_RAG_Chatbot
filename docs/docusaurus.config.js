@@ -61,8 +61,7 @@ const config = {
         },
         items: [
           {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            to: '/#modules',
             position: 'left',
             label: 'Modules',
           },

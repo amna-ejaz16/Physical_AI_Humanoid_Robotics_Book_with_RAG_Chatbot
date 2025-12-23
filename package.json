@@ -1,0 +1,15 @@
+{
+  "name": "physical-ai-humanoid-robotics-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Physical AI & Humanoid Robotics Book - Monorepo",
+  "scripts": {
+    "start": "cd docs && npm start",
+    "build": "cd docs && npm build",
+    "serve": "cd docs && npm serve",
+    "install:all": "npm install && cd docs && npm install"
+  },
+  "dependencies": {
+    "framer-motion": "^12.23.26"
+  }
+}

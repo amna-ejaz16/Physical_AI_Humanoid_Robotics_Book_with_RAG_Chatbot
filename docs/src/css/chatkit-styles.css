@@ -1,0 +1,84 @@
+/**
+ * ChatKit Widget Styles
+ * Handles positioning, sizing, and responsive behavior
+ */
+
+/* Main widget positioning */
+openai-chatkit {
+  /* Fixed positioning in bottom-right corner */
+  position: fixed !important;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+
+  /* Size */
+  width: 360px;
+  height: 600px;
+  max-height: calc(100vh - 40px);
+
+  /* Visual styling */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+
+  /* Smooth transitions */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect */
+openai-chatkit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Tablet responsive (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  openai-chatkit {
+    width: 340px;
+    height: 550px;
+  }
+}
+
+/* Mobile responsive (max 768px) */
+@media (max-width: 768px) {
+  openai-chatkit {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    height: 500px;
+    max-height: calc(100vh - 20px);
+  }
+}
+
+/* Very small screens (max 480px) */
+@media (max-width: 480px) {
+  openai-chatkit {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}
+
+/* Dark theme adjustments (if Docusaurus uses dark theme) */
+[data-theme='dark'] openai-chatkit {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Prevent widget from blocking important UI elements */
+.docusaurus-highlight-code-line,
+.theme-code-block,
+.pagination-nav {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure proper rendering on print */
+@media print {
+  openai-chatkit {
+    display: none !important;
+  }
+}
