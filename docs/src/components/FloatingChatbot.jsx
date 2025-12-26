@@ -123,7 +123,7 @@ export default function FloatingChatbot() {
           {/* Chat iframe */}
           <div style={{ flex: 1, overflow: 'hidden' }}>
             <iframe
-              src="https://amna-ejaz99-physical-ai-robotics-chatbot.hf.space/ask"
+              src="https://amna-ejaz99-physical-ai-robotics-chatbot.hf.space/"
               style={{
                 width: '100%',
                 height: '100%',
@@ -161,6 +161,7 @@ export default function FloatingChatbot() {
     </>
   );
 }
+
 
 
 
